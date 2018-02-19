@@ -1,0 +1,106 @@
+{% include 'header.html' %}
+
+{% load static %} 
+{% load l10n %}
+{% load poll_extras %}
+
+    <div class="container">
+        <link href="{% static "main.css" %}" rel="stylesheet">
+
+        <script type="text/javascript">
+          function EnableStart() {
+              document.getElementById("StartButton").disabled = false;
+          }
+        </script>
+
+        <div class="jumbotron" style="max-width: 720px">
+            <h1>Swim24 2018</h1>
+
+
+<script>
+function fnStartButton() {
+     document.getElementById("StartButton").disabled = true;
+     location.href="./Start"; 
+}
+function fnEnableStart() {
+     document.getElementById("StartButton").disabled = false;
+}
+</script>
+
+{% if auth_user %}
+                <input id="StartButton" disabled type="button" onclick="fnStartButton();" value="СТАРТ" style="padding: 5px"/>
+                <input type="button" value="Enable Restart competition" onclick="fnEnableStart();" style="padding: 5px"/>
+{% endif %}           
+
+{% if auth_user %}
+<p>Управление соревнованием ({{user}})</p>
+{% else %}
+<h3>Таблица результатов</h3>
+{% endif %}           
+
+            <p class="lead"></p>
+
+{% if Results_list %}
+            <table>
+              <thead bgcolor=#CEE3F6>
+                  <tr>
+                      <td style="width:10%; text-align: center">Участник</td>
+                      <td style="width:10%; text-align: center">Старт</td>
+                      <td style="width:10%; text-align: center">Кол-во кругов</td>
+                      <td style="width:10%; text-align: center">Финиш</td>
+                      <td style="width:10%; text-align: center">Завершить</td>
+                  </tr>
+              </thead>
+              {% for item in Results_list %}
+              <tr>
+                <td style="text-align: center">
+{% if auth_user %}
+                   <a href="{{ item.res_Sportsman.id }}/tap">
+                      <input type="button" value="{{ item.res_Sportsman.sm_Name }}"  style="width: 100%"/>
+                   </a>
+{% else %}
+                   <td class="restitle" >{{ item.res_Sportsman.sm_Name }}</td>
+{% endif %}           
+                </td>
+{% if item.res_StartTime is not Null %}
+                <td class="resdata" >{{ item.res_StartTime.time | time:"H:i:s" | localize }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_SwimLaps is not Null %}
+                <td class="resdata">{{ item.res_SwimLaps }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_FinishTime is not Null %}
+                <td class="resdata">{{ item.res_FinishTime | duration }}</td>
+{% else %}
+                <td class="resdata">DNF</td>
+{% endif %}           
+
+                <td style="text-align: center">
+{% if auth_user %}
+  {% if item.res_FinishTime is not Null %}
+                   ------
+  {% else %}
+                   <a href="{{ item.res_Sportsman.id }}/tapFinish">
+                      <input type="button" value="Завершить"  style="width:100%; text-align: center"/>
+                   </a>
+  {% endif %}           
+{% else %}
+                   ------
+{% endif %}           
+                </td>
+
+              </tr>
+              {% endfor %}
+            </table>
+{% else %}
+           <p>No results available</p>
+{% endif %}           
+        </div>
+    </div>
+
+{% include 'footer.html' %}

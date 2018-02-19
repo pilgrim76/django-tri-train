@@ -1,0 +1,2 @@
+
+C:\Users\semenov-y\PycharmProjects\tri-train\django-server>C:\Python36-32\python manage.py makemigrations swim24app 

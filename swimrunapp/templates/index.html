@@ -1,0 +1,84 @@
+{% include 'header.html' %}
+
+{% load static %} 
+    <link href="{% static "main.css" %}" rel="stylesheet">
+ 
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="#">Home</a>
+                    </li>
+                    <li role="presentation"><a href="showSignUp">Sign Up</a>
+                    </li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Тренировочные старты</h3>
+        </div>
+
+<style>
+.resdata {
+    width: 185px;
+    text-align: center;
+    color: red;
+}
+</style>
+ 
+        <div class="jumbotron">
+            <h1>Tri-train App</h1>
+            <p class="lead"></p>
+
+{% if Results_list %}
+            <table>
+              {% for item in Results_list %}
+              <tr>
+                <td>
+                   <a href="{{ item.res_Sportsman.id }}/tap">
+                      <input type="button" value="{{ item.res_Sportsman.sm_Name }}"  style="width: 85px"/>
+                   </a>
+                </td>
+{% if item.res_StartSwimTime is not Null %}
+                <td class="resdata" >{{ item.res_StartSwimTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_EndSwimTime is not Null %}
+                <td class="resdata">{{ item.res_EndSwimTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_StartCicleTime is not Null %}
+                <td class="resdata">{{ item.res_StartCicleTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_EndCicleTime is not Null %}
+                <td class="resdata">{{ item.res_EndCicleTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_StartRunTime is not Null %}
+                <td class="resdata">{{ item.res_StartRunTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+
+{% if item.res_EndRunTime is not Null %}
+                <td class="resdata">{{ item.res_EndRunTime.time }}</td>
+{% else %}
+                <td class="resdata">DNS</td>
+{% endif %}           
+              </tr>
+              {% endfor %}
+            </table>
+{% else %}
+           <p>No results available</p>
+{% endif %}           
+        </div>
+    </div>
+
+{% include 'footer.html' %}
