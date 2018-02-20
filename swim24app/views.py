@@ -83,7 +83,10 @@ def tapStart(request):
 
 
 def Gets24Results(request):
-    sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
+    if request.user.is_authenticated:
+        sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
+    else:
+        sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.all()]       
 
     results_list = tbls24Results.objects.filter(res_Sportsman__in=sportsmen)
     results_list = sorted(results_list, reverse=True)
@@ -109,8 +112,8 @@ def tapLogin(request):
     if not request.user.is_authenticated:
         username = request.GET['inputName']
         password = request.GET['inputPassword']
-        user = authenticate(username=username, password=password)
-        login(request, user)
+        if user = authenticate(username=username, password=password):
+            login(request, user)
     return redirect("../s24Results")
 
 
