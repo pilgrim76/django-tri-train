@@ -40,6 +40,9 @@ def dbSaveAction(user, action_id, action_desc):
 
 
 def tapSportsman(request, sportsman_id):
+    if not request.user.is_authenticated:
+        return redirect("./s24Results")
+
     results = tbls24Results.objects.filter(res_Sportsman__exact=sportsman_id)
     result = results[0]
 
@@ -56,6 +59,9 @@ def tapSportsman(request, sportsman_id):
 
 
 def tapSportsmanFinish(request, sportsman_id):
+    if not request.user.is_authenticated:
+        return redirect("./s24Results")
+
     results = tbls24Results.objects.filter(res_Sportsman__exact=sportsman_id)
     result = results[0]
 
@@ -69,6 +75,9 @@ def tapSportsmanFinish(request, sportsman_id):
 
 
 def tapStart(request):
+    if not request.user.is_authenticated:
+        return redirect("./s24Results")
+
     tbls24Results.objects.all().delete()
 
     sportsmen = tbls24Sportsman.objects.all()
@@ -87,6 +96,11 @@ def Gets24Results(request):
         sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
     else:
         sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.all()]       
+
+    distances = [sm.sm_Distance for sm in sportsmen]
+    dist_set = set(distances)
+    distances = list(dist_set)
+    print("Gets24Results - distances = ", [i.dst_Name for i in distances])
 
     results_list = tbls24Results.objects.filter(res_Sportsman__in=sportsmen)
     results_list = sorted(results_list, reverse=True)
@@ -112,9 +126,8 @@ def tapLogin(request):
     if not request.user.is_authenticated:
         username = request.GET['inputName']
         password = request.GET['inputPassword']
-        if user = authenticate(username=username, password=password):
+        user = authenticate(username=username, password=password)
+        if user:
             login(request, user)
     return redirect("../s24Results")
-
-
 

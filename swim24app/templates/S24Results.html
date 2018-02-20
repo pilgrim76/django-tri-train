@@ -51,51 +51,58 @@ function fnEnableStart() {
                       <td style="width:10%; text-align: center">Завершить</td>
                   </tr>
               </thead>
-              {% for item in Results_list %}
+{% for item in Results_list %}
               <tr>
-{% if auth_user %}
+  {% if auth_user %}
                 <td style="text-align: center">
                    <a href="{{ item.res_Sportsman.id }}/tap">
                       <input type="button" value="{{ item.res_Sportsman.sm_Name }}"  style="width: 100%"/>
                    </a>
                 </td>
-{% else %}
-                   <td class="restitle" >{{ item.res_Sportsman.sm_Name }}</td>
-{% endif %}           
-{% if item.res_StartTime is not Null %}
-                <td class="resdata" >{{ item.res_StartTime.time | time:"H:i:s" | localize }}</td>
-{% else %}
-                <td class="resdata">DNS</td>
-{% endif %}           
+  {% else %}
+                <td class="restitle" >{{ item.res_Sportsman.sm_Name }}</td>
+  {% endif %}           
 
-{% if item.res_SwimLaps is not Null %}
-                <td class="resdata">{{ item.res_SwimLaps }}</td>
-{% else %}
-                <td class="resdata">DNS</td>
-{% endif %}           
+                <td class="resdata" >
+  {% if item.res_StartTime is not Null %}
+                {{ item.res_StartTime.time | time:"H:i:s" | localize }}
+  {% else %}
+                DNS
+  {% endif %}           
+                </td>
 
-{% if item.res_FinishTime is not Null %}
-                <td class="resdata">{{ item.res_FinishTime | duration }}</td>
-{% else %}
-                <td class="resdata">DNF</td>
-{% endif %}           
+                <td class="resdata" >
+  {% if item.res_SwimLaps is not Null %}
+                {{ item.res_SwimLaps }}
+  {% else %}
+                DNS
+  {% endif %}           
+                </td>
+
+                <td class="resdata" >
+  {% if item.res_FinishTime is not Null %}
+                {{ item.res_FinishTime | duration }}
+  {% else %}
+                DNF
+  {% endif %}           
+                </td>
 
                 <td style="text-align: center">
-{% if auth_user %}
-  {% if item.res_FinishTime is not Null %}
+  {% if auth_user %}
+    {% if item.res_FinishTime is not Null %}
                    ------
-  {% else %}
+    {% else %}
                    <a href="{{ item.res_Sportsman.id }}/tapFinish">
                       <input type="button" value="Завершить"  style="width:100%; text-align: center"/>
                    </a>
-  {% endif %}           
-{% else %}
+    {% endif %}           
+  {% else %}
                    ------
-{% endif %}           
+  {% endif %}           
                 </td>
 
               </tr>
-              {% endfor %}
+{% endfor %}
             </table>
 {% else %}
            <p>No results available</p>
