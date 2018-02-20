@@ -53,15 +53,15 @@ function fnEnableStart() {
               </thead>
               {% for item in Results_list %}
               <tr>
-                <td style="text-align: center">
 {% if auth_user %}
+                <td style="text-align: center">
                    <a href="{{ item.res_Sportsman.id }}/tap">
                       <input type="button" value="{{ item.res_Sportsman.sm_Name }}"  style="width: 100%"/>
                    </a>
+                </td>
 {% else %}
                    <td class="restitle" >{{ item.res_Sportsman.sm_Name }}</td>
 {% endif %}           
-                </td>
 {% if item.res_StartTime is not Null %}
                 <td class="resdata" >{{ item.res_StartTime.time | time:"H:i:s" | localize }}</td>
 {% else %}

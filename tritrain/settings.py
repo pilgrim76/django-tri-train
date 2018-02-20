@@ -25,7 +25,7 @@ SECRET_KEY = '#uuy@dm0gzr@a(y&6l(49e5^zfilycybe)9%ill@@!yfpz+o22'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pilgrim76.pythonanywhere.com']
 
 
 # Application definition
@@ -80,10 +80,10 @@ DATABASES = {
     'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tri_train',
-	'USER': 'yuri',
-	'PASSWORD': 'elephant',
-	'HOST': 'localhost',
+        'NAME': 'pilgrim76$tri_train',
+	'USER': 'pilgrim76',
+	'PASSWORD': 'Elephant1',
+	'HOST': 'pilgrim76.mysql.pythonanywhere-services.com',
     }
 }
 
