@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 
 # Create your views here.
 from django.http import HttpResponse
-from .models import tbls24Results, tbls24ActionLog, tbls24Sportsman, tbls24Counter
+from .models import tbls24Results, tbls24ActionLog, tbls24Sportsman, tbls24Counter, tbls24Distance
 from datetime import timedelta
 
 
@@ -92,26 +92,45 @@ def tapStart(request):
 
 
 def Gets24Results(request):
+    current_user = request.user
+    context = dict()
+
     if request.user.is_authenticated:
         sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
     else:
         sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.all()]       
 
-    distances = [sm.sm_Distance for sm in sportsmen]
-    dist_set = set(distances)
-    distances = list(dist_set)
-    print("Gets24Results - distances = ", [i.dst_Name for i in distances])
+    distances = [dst.dst_Name for dst in tbls24Distance.objects.all()]
+    context["distances"] = list(distances)
+    dri_list = list()
+    for dst in distances:
+        dri = list()
+        dri.append(dst)
+
+        if request.user.is_authenticated:
+            dst_sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user, cnt_Sportsman__sm_Distance__dst_Name=dst)]
+        else:
+            dst_sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_Sportsman__sm_Distance__dst_Name=dst)]
+
+        results_list = tbls24Results.objects.filter(res_Sportsman__in=dst_sportsmen)
+        results_list = sorted(results_list, reverse=True)
+        dri.append(results_list)
+        dri_list.append(dri)
+
+    context['dri_list'] = dri_list
 
     results_list = tbls24Results.objects.filter(res_Sportsman__in=sportsmen)
     results_list = sorted(results_list, reverse=True)
 
-    current_user = request.user
-    context = {'Results_list': results_list}
+    context['Results_list'] = results_list
     context['auth_user'] = current_user.is_authenticated()
+
     if current_user.is_authenticated():
         context['user'] = current_user.username
     else:
         context['user'] = 'anonymous'
+
+    print("Gets24Results - ", context)
 
     return render(request, 'S24Results.html', context)
 

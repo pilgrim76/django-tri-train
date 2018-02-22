@@ -28,11 +28,6 @@ function fnEnableStart() {
 </script>
 
 {% if auth_user %}
-                <input id="StartButton" disabled type="button" onclick="fnStartButton();" value="СТАРТ" style="padding: 5px"/>
-                <input type="button" value="Enable Restart competition" onclick="fnEnableStart();" style="padding: 5px"/>
-{% endif %}           
-
-{% if auth_user %}
 <p>Управление соревнованием ({{user}})</p>
 {% else %}
 <h3>Таблица результатов</h3>
@@ -40,7 +35,17 @@ function fnEnableStart() {
 
             <p class="lead"></p>
 
-{% if Results_list %}
+
+
+{% if Results_list and distances %}
+{% for dst in distances %}
+            <p class="lead">Дистанция - {{dst}}</p>
+
+{% if auth_user %}
+                <input id="StartButton" disabled type="button" onclick="fnStartButton();" value="СТАРТ" style="padding: 5px"/>
+                <input type="button" value="Enable Restart competition" onclick="fnEnableStart();" style="padding: 5px"/>
+{% endif %}           
+
             <table>
               <thead bgcolor=#CEE3F6>
                   <tr>
@@ -51,59 +56,65 @@ function fnEnableStart() {
                       <td style="width:10%; text-align: center">Завершить</td>
                   </tr>
               </thead>
-{% for item in Results_list %}
+  {% for item in Results_list %}
+    {% if item.res_Sportsman.sm_Distance.dst_Name == dst %}
+
               <tr>
-  {% if auth_user %}
+    {% if auth_user %}
                 <td style="text-align: center">
                    <a href="{{ item.res_Sportsman.id }}/tap">
                       <input type="button" value="{{ item.res_Sportsman.sm_Name }}"  style="width: 100%"/>
                    </a>
                 </td>
-  {% else %}
+    {% else %}
                 <td class="restitle" >{{ item.res_Sportsman.sm_Name }}</td>
-  {% endif %}           
+    {% endif %}           
 
                 <td class="resdata" >
-  {% if item.res_StartTime is not Null %}
+    {% if item.res_StartTime is not Null %}
                 {{ item.res_StartTime.time | time:"H:i:s" | localize }}
-  {% else %}
+    {% else %}
                 DNS
-  {% endif %}           
+    {% endif %}           
                 </td>
 
                 <td class="resdata" >
-  {% if item.res_SwimLaps is not Null %}
+    {% if item.res_SwimLaps is not Null %}
                 {{ item.res_SwimLaps }}
-  {% else %}
+    {% else %}
                 DNS
-  {% endif %}           
+    {% endif %}           
                 </td>
 
                 <td class="resdata" >
-  {% if item.res_FinishTime is not Null %}
+    {% if item.res_FinishTime is not Null %}
                 {{ item.res_FinishTime | duration }}
-  {% else %}
+    {% else %}
                 DNF
-  {% endif %}           
+    {% endif %}           
                 </td>
 
                 <td style="text-align: center">
-  {% if auth_user %}
-    {% if item.res_FinishTime is not Null %}
+    {% if auth_user %}
+      {% if item.res_FinishTime is not Null %}
                    ------
-    {% else %}
+      {% else %}
                    <a href="{{ item.res_Sportsman.id }}/tapFinish">
                       <input type="button" value="Завершить"  style="width:100%; text-align: center"/>
                    </a>
-    {% endif %}           
-  {% else %}
+      {% endif %}           
+    {% else %}
                    ------
-  {% endif %}           
+    {% endif %}           
                 </td>
 
               </tr>
-{% endfor %}
+  {% endif %}
+  {% endfor %}
             </table>
+{% endfor %}
+
+
 {% else %}
            <p>No results available</p>
 {% endif %}           
