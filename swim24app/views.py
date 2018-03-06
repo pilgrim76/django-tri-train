@@ -74,21 +74,22 @@ def tapSportsmanFinish(request, sportsman_id):
 
 
 
-def tapStart(request):
+def tapStart(request, distance_id):
     if not request.user.is_authenticated:
-        return redirect("./s24Results")
+        return redirect("../s24Results")
 
-    tbls24Results.objects.all().delete()
+    sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
 
-    sportsmen = tbls24Sportsman.objects.all()
+    start_time=timezone.now()
+    for sm in sportsmen:
+        if sm.sm_Distance.dst_Name == distance_id:
+            tbls24Results.objects.filter(res_Sportsman=sm).delete()
+            smresult = tbls24Results.objects.create(res_Sportsman=sm, res_StartTime = start_time, res_LastLapTime = start_time, res_SwimLaps = 0, res_FinishTime = None)
+            smresult.save()
 
-    for sm in sportsmen :
-        smresult = tbls24Results.objects.create(res_Sportsman=sm, res_StartTime = timezone.now(), res_LastLapTime = timezone.now(), res_SwimLaps = 0, res_FinishTime = None)
-        smresult.save()
+    dbSaveAction(request.user, ACT_TAP_START, str("Start {}").format(distance_id))
 
-    dbSaveAction(request.user, ACT_TAP_START, "Start")
-
-    return redirect("./s24Results")
+    return redirect("../s24Results")
 
 
 def Gets24Results(request):

@@ -42,9 +42,18 @@ function fnEnableStart() {
             <p class="lead">Дистанция - {{dst}}</p>
 
 {% if auth_user %}
-                <input id="StartButton" disabled type="button" onclick="fnStartButton();" value="СТАРТ" style="padding: 5px"/>
-                <input type="button" value="Enable Restart competition" onclick="fnEnableStart();" style="padding: 5px"/>
-{% endif %}           
+                <!--input id="StartButton" disabled type="button" onclick="fnStartButton();" value="СТАРТ" style="padding: 5px"/>
+                <input type="button" value="Enable Restart competition" onclick="fnEnableStart();" style="padding: 5px"/>-->
+           <script>
+           function fnEnableStart{{dst}}() {
+                document.getElementById("StartButton{{dst}}").disabled = false;
+           }
+           </script>
+           <a href="{{dst}}/Start">
+              <input type="button" id="StartButton{{dst}}" disabled value="СТАРТ {{dst}}"  style="width: 50%"/>
+           </a>
+           <input type="button" value="Enable Restart competition {{dst}}" onclick="fnEnableStart{{dst}}();" style="padding: 5px"/>
+{% endif %}
 
             <table>
               <thead bgcolor=#CEE3F6>
