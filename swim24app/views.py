@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 # Create your views here.
 from django.http import HttpResponse
 from .models import tbls24Results, tbls24ActionLog, tbls24Sportsman, tbls24Counter, tbls24Distance
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 FASTEST_LAP        = 5
@@ -36,7 +36,7 @@ def index(request):
 
 
 def dbSaveAction(user, action_id, action_desc):
-    tbls24ActionLog.add(user, timezone.now(), action_id, action_desc)
+    tbls24ActionLog.add(user, datetime.now(), action_id, action_desc)
 
 
 def tapSportsman(request, sportsman_id):
@@ -47,11 +47,11 @@ def tapSportsman(request, sportsman_id):
     result = results[0]
 
     if result.res_StartTime is None :
-        results.update(res_StartTime = timezone.now(), res_LastLapTime = timezone.now())
+        results.update(res_StartTime = datetime.now(), res_LastLapTime = datetime.now())
     else:
         dt = result.res_LastLapTime
-        if dt is not None and timezone.now() - dt > timedelta(seconds=FASTEST_LAP) :
-            results.update(res_SwimLaps = result.res_SwimLaps + 1, res_LastLapTime = timezone.now())
+        if dt is not None and datetime.now() - dt > timedelta(seconds=FASTEST_LAP) :
+            results.update(res_SwimLaps = result.res_SwimLaps + 1, res_LastLapTime = datetime.now())
 
     dbSaveAction(request.user, ACT_TAP_SPORTSMAN, str("sportsman_id={} SwimLaps={}").format(sportsman_id, result.res_SwimLaps))
 
@@ -66,7 +66,7 @@ def tapSportsmanFinish(request, sportsman_id):
     result = results[0]
 
     if result.res_StartTime is not None :
-        results.update(res_FinishTime = timezone.now() - result.res_StartTime)
+        results.update(res_FinishTime = datetime.now() - result.res_StartTime)
 
     dbSaveAction(request.user, ACT_TAP_SM_FINISH, str("sportsman_id={} SwimLaps={}").format(sportsman_id, result.res_SwimLaps))
 
@@ -80,7 +80,7 @@ def tapStart(request, distance_id):
 
     sportsmen = [sm.cnt_Sportsman for sm in tbls24Counter.objects.filter(cnt_user=request.user)]
 
-    start_time=timezone.now()
+    start_time=datetime.now()
     for sm in sportsmen:
         if sm.sm_Distance.dst_Name == distance_id:
             tbls24Results.objects.filter(res_Sportsman=sm).delete()
